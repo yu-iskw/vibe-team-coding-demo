@@ -14,7 +14,7 @@
     "lint": "trunk check",
     "lint:all": "trunk check --all",
     "lint:security": "trunk check --all --scope security",
-    "test": "vitest run",
+    "test": "vitest run && pnpm --filter frontend test",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:integration": "pnpm --filter frontend test",

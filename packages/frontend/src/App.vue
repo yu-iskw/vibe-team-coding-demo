@@ -2,14 +2,18 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import Konva from 'konva'
 import { useGraphState } from './composables/useGraphState'
-import type { NodeData } from './types'
+import type { NodeData, EdgeData } from './types'
 
 const container = ref<HTMLDivElement | null>(null)
-const { nodes, updateNodePosition, addNode, deleteNode } = useGraphState()
+const { nodes, edges, remoteAwareness, updateNodePosition, addNode, deleteNode, addEdge, updateAwareness } = useGraphState()
 
 let stage: Konva.Stage | null = null
+let edgeLayer: Konva.Layer | null = null
 let nodeLayer: Konva.Layer | null = null
+let awarenessLayer: Konva.Layer | null = null
 const konvaNodes = new Map<string, Konva.Group>()
+const konvaEdges = new Map<string, Konva.Line>()
+const konvaCursors = new Map<number, Konva.Group>()
 
 const addRandomNode = () => {
   const id = `node-${Math.random().toString(36).substr(2, 9)}`
@@ -25,6 +29,23 @@ const addRandomNode = () => {
   })
 }
 
+const addEdgeBetweenNodes = () => {
+  const nodeIds = Array.from(nodes.value.keys())
+  if (nodeIds.length >= 2) {
+    // Create an edge between first two nodes
+    const sourceId = nodeIds[0]!
+    const targetId = nodeIds[1]!
+    const edgeId = `edge-${Math.random().toString(36).substr(2, 9)}`
+
+    addEdge({
+      id: edgeId,
+      sourceId,
+      targetId,
+      type: 'straight'
+    })
+  }
+}
+
 const createKonvaNode = (nodeData: NodeData) => {
   const group = new Konva.Group({
     id: nodeData.id,
@@ -36,7 +57,7 @@ const createKonvaNode = (nodeData: NodeData) => {
   const rect = new Konva.Rect({
     width: nodeData.width,
     height: nodeData.height,
-    fill: nodeData.color,
+    fill: nodeData.color || '#42b883',
     cornerRadius: 8,
     shadowBlur: 5,
     shadowColor: 'black',
@@ -45,7 +66,7 @@ const createKonvaNode = (nodeData: NodeData) => {
   })
 
   const text = new Konva.Text({
-    text: nodeData.content,
+    text: nodeData.content || 'Node',
     fontSize: 14,
     fontFamily: 'sans-serif',
     fill: 'white',
@@ -69,6 +90,67 @@ const createKonvaNode = (nodeData: NodeData) => {
   return group
 }
 
+const createKonvaEdge = (edgeData: EdgeData, nodesMap: Map<string, NodeData>) => {
+  const sourceNode = nodesMap.get(edgeData.sourceId)
+  const targetNode = nodesMap.get(edgeData.targetId)
+
+  if (!sourceNode || !targetNode) return null
+
+  // Calculate center points of source and target nodes
+  const sourceX = sourceNode.x + sourceNode.width / 2
+  const sourceY = sourceNode.y + sourceNode.height / 2
+  const targetX = targetNode.x + targetNode.width / 2
+  const targetY = targetNode.y + targetNode.height / 2
+
+  const line = new Konva.Line({
+    id: edgeData.id,
+    points: [sourceX, sourceY, targetX, targetY],
+    stroke: '#666',
+    strokeWidth: 2,
+    tension: 0.5, // Add slight curve for better visual appearance
+  })
+
+  return line
+}
+
+const createKonvaCursor = (clientId: number, cursor: { x: number; y: number }, user?: { name: string; color: string }) => {
+  const cursorColor = user?.color || '#ff0000'
+
+  const cursorGroup = new Konva.Group({
+    id: `cursor-${clientId}`,
+  })
+
+  // Cursor circle
+  const cursorCircle = new Konva.Circle({
+    radius: 6,
+    fill: cursorColor,
+    stroke: '#fff',
+    strokeWidth: 2,
+    shadowColor: cursorColor,
+    shadowBlur: 4,
+    shadowOpacity: 0.6,
+  })
+
+  cursorGroup.add(cursorCircle)
+
+  // Optional user name label
+  if (user?.name) {
+    const label = new Konva.Text({
+      text: user.name,
+      fontSize: 12,
+      fontFamily: 'sans-serif',
+      fill: cursorColor,
+      x: 10,
+      y: -20,
+    })
+    cursorGroup.add(label)
+  }
+
+  cursorGroup.position({ x: cursor.x, y: cursor.y })
+
+  return cursorGroup
+}
+
 onMounted(() => {
   if (!container.value) return
 
@@ -78,16 +160,53 @@ onMounted(() => {
     height: window.innerHeight,
   })
 
+  // Create three layers in correct z-order (bottom to top)
+  edgeLayer = new Konva.Layer()
   nodeLayer = new Konva.Layer()
-  stage.add(nodeLayer)
+  awarenessLayer = new Konva.Layer()
 
-  // Initial render
+  // Add layers to stage in order (edges at bottom, awareness at top)
+  stage.add(edgeLayer)
+  stage.add(nodeLayer)
+  stage.add(awarenessLayer)
+
+  // Initial render - nodes
   nodes.value.forEach((nodeData) => {
     const kNode = createKonvaNode(nodeData)
     konvaNodes.set(nodeData.id, kNode)
     nodeLayer?.add(kNode)
   })
-  nodeLayer.draw()
+  nodeLayer.batchDraw()
+
+  // Initial render - edges
+  edges.value.forEach((edgeData) => {
+    const newEdge = createKonvaEdge(edgeData, nodes.value)
+    if (newEdge) {
+      konvaEdges.set(edgeData.id, newEdge)
+      edgeLayer?.add(newEdge)
+    }
+  })
+  edgeLayer.batchDraw()
+
+  // Initial render - remote cursors
+  remoteAwareness.value.forEach((remoteUser, clientId) => {
+    if (remoteUser.state.cursor) {
+      const cursor = createKonvaCursor(clientId, remoteUser.state.cursor, remoteUser.state.user)
+      konvaCursors.set(clientId, cursor)
+      awarenessLayer?.add(cursor)
+    }
+  })
+  awarenessLayer.batchDraw()
+
+  // Track mouse movement for awareness (cursor position)
+  stage.on('mousemove', () => {
+    const pointerPos = stage?.getPointerPosition()
+    if (pointerPos) {
+      updateAwareness({
+        cursor: { x: pointerPos.x, y: pointerPos.y },
+      })
+    }
+  })
 
   // Handle window resize
   window.addEventListener('resize', () => {
@@ -135,13 +254,86 @@ watch(nodes, (newNodes) => {
   })
 
   nodeLayer.batchDraw()
+
+  // Trigger edge re-rendering since node positions may have changed
+  renderEdges()
 }, { deep: true })
+
+// Reactively update Konva edges when Yjs state changes
+watch(edges, (newEdges) => {
+  if (!edgeLayer) return
+
+  // Clear existing edges
+  konvaEdges.forEach((kEdge) => {
+    kEdge.destroy()
+  })
+  konvaEdges.clear()
+
+  // Add new edges
+  newEdges.forEach((edgeData, id) => {
+    const newEdge = createKonvaEdge(edgeData, nodes.value)
+    if (newEdge) {
+      konvaEdges.set(id, newEdge)
+      edgeLayer?.add(newEdge)
+    }
+  })
+
+  edgeLayer.batchDraw()
+}, { deep: true })
+
+// Reactively update remote cursors when awareness state changes
+watch(remoteAwareness, (newAwareness) => {
+  if (!awarenessLayer) return
+
+  // Clear existing cursors
+  konvaCursors.forEach((kCursor) => {
+    kCursor.destroy()
+  })
+  konvaCursors.clear()
+
+  // Add remote cursors (exclude local client)
+  newAwareness.forEach((remoteUser, clientId) => {
+    if (remoteUser.state.cursor) {
+      const cursor = createKonvaCursor(clientId, remoteUser.state.cursor, remoteUser.state.user)
+      konvaCursors.set(clientId, cursor)
+      awarenessLayer?.add(cursor)
+    }
+  })
+
+  awarenessLayer.batchDraw()
+}, { deep: true })
+
+// Function to re-render edges (called when node positions change)
+const renderEdges = () => {
+  if (!edgeLayer) return
+
+  // Update existing edge positions based on current node positions
+  konvaEdges.forEach((kEdge, edgeId) => {
+    const edgeData = edges.value.get(edgeId)
+    if (edgeData) {
+      const sourceNode = nodes.value.get(edgeData.sourceId)
+      const targetNode = nodes.value.get(edgeData.targetId)
+
+      if (sourceNode && targetNode) {
+        const sourceX = sourceNode.x + sourceNode.width / 2
+        const sourceY = sourceNode.y + sourceNode.height / 2
+        const targetX = targetNode.x + targetNode.width / 2
+        const targetY = targetNode.y + targetNode.height / 2
+
+        kEdge.points([sourceX, sourceY, targetX, targetY])
+      }
+    }
+  })
+
+  edgeLayer.batchDraw()
+}
 </script>
 
 <template>
   <div class="canvas-container" ref="container"></div>
   <div class="controls">
     <button @click="addRandomNode">Add Node</button>
+    <button @click="addEdgeBetweenNodes">Add Edge</button>
   </div>
 </template>
 

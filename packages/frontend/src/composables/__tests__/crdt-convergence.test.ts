@@ -114,11 +114,15 @@ describe("CRDT Convergence", () => {
     expect(nodeFromDoc2).toBeDefined();
 
     // Doc1 updates position properties
-    nodeFromDoc1.set("x", 200); // Change x coordinate
+    if (nodeFromDoc1) {
+      nodeFromDoc1.set("x", 200); // Change x coordinate
+    }
 
     // Doc2 updates type properties (simulating concurrent editing)
-    nodeFromDoc2.set("type", "rectangle");
-    nodeFromDoc2.set("width", 150);
+    if (nodeFromDoc2) {
+      nodeFromDoc2.set("type", "rectangle");
+      nodeFromDoc2.set("width", 150);
+    }
 
     // Sync the concurrent changes
     const stateVector1 = Y.encodeStateVector(doc1);

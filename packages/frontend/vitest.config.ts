@@ -1,8 +1,11 @@
 import { defineConfig } from "vitest/config";
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
+  plugins: [vue()],
   test: {
     include: ["**/*.{test,spec}.ts"],
-    exclude: ["node_modules", ".trunk", "tests/e2e/**", "packages/frontend/**"],
+    exclude: ["node_modules", ".trunk"],
+    environment: "jsdom",
   },
 });

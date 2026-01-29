@@ -1,0 +1,3 @@
+kind: perf
+body: Optimize E2E tests by using official Playwright Docker image to skip system dependency installation
+time: 2026-01-30T00:01:47.061017+09:00

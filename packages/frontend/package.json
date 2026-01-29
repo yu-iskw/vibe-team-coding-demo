@@ -10,11 +10,11 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@hocuspocus/provider": "^3.4.4",
     "@vibe-team-coding-demo/common": "workspace:*",
     "@vueuse/core": "^14.1.0",
     "konva": "^10.2.0",
     "vue": "^3.5.24",
-    "y-websocket": "^3.0.0",
     "yjs": "^13.6.29"
   },
   "devDependencies": {
