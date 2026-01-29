@@ -17,8 +17,8 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:integration": "vitest run --dir packages/frontend",
-    "test:unit": "vitest run --dir packages/common",
+    "test:integration": "pnpm --filter frontend test",
+    "test:unit": "vitest run --config vitest.config.ts packages/common",
     "vibe-kanban:server": "npx vibe-kanban"
   },
   "devDependencies": {
