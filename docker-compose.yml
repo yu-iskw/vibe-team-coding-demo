@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
+    ports:
+      - 1234:1234
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'node -e ''require("http").get("http://localhost:1234", (res) => process.exit(res.statusCode === 200 ? 0 : 1))'' || exit 0'
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile
+      args:
+        - VITE_HOCUSPOCUS_URL=ws://localhost:1234
+    ports:
+      - 8080:8080
+    depends_on:
+      backend:
+        condition: service_started
