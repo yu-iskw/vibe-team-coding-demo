@@ -1,0 +1,3 @@
+kind: fix
+body: Update GitHub workflow to install dependencies for ESLint 9 flat config in Trunk CI
+time: 2026-01-29T23:18:56.387783+09:00
