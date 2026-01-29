@@ -72,7 +72,7 @@ brew install changie adr-tools
 changie --version
 ```
 
-If not using Homebrew, follow the [Changie installation guide](https://changie.dev/docs/installation/).
+If not using Homebrew, follow the [Changie installation guide](https://changie.dev/guide/installation/).
 
 #### ADR-Tools
 
