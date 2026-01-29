@@ -1,11 +1,11 @@
 {
-  "name": "typescript-template",
+  "name": "vibe-team-coding-demo",
   "version": "1.0.0",
   "private": true,
-  "description": "",
+  "description": "A demo project for Vibe team coding capabilities",
   "keywords": [],
   "license": "Apache-2.0",
-  "author": "",
+  "author": "Yu",
   "main": "index.js",
   "scripts": {
     "build": "pnpm --recursive build",

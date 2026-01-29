@@ -1,10 +1,10 @@
 {
-  "name": "@typescript-template/common",
+  "name": "@vibe-team-coding-demo/common",
   "version": "1.0.0",
   "description": "Common utilities and types for the TypeScript template project.",
   "keywords": [],
   "license": "ISC",
-  "author": "",
+  "author": "Yu",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

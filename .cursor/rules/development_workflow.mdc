@@ -1,0 +1,74 @@
+---
+alwaysApply: true
+---
+# Agentic Development Workflow Strategy
+
+Cursor agents **HAVE TO** strictly follow this lifecycle and utilize the corresponding **Agent Skills** in `.cursor/skills/`. This workflow is non-negotiable for ensuring project consistency, traceability, and quality.
+
+However, if the task looks like a minor change that does not require a change fragment, you **MAY** skip the change fragment recording step.
+
+## 1. Task Lifecycle Policy
+
+### Phase A: Discovery & Intake (MANDATORY)
+
+- **Objective**: Identify the target work, create a verifiable plan, and initialize the environment.
+- **Skills**:
+  - [`agent-planning`](.cursor/skills/agent-planning/SKILL.md): For complex requests, create a verified plan in `.cursor/plans/`.
+  - [`vibe-management`](.cursor/skills/vibe-management/SKILL.md): Sync verified plans to Vibe Kanban board.
+- **Workflow**:
+  1. **For Complex Work**: Use the tool-agnostic `agent-planning` skill to analyze the request, create a plan file, and get user verification.
+  2. **Sync to Board**: Use the **Plan Synchronization** feature in [`vibe-management`](.cursor/skills/vibe-management/SKILL.md) to bridge the verified roadmap into a hierarchical set of Vibe Kanban tickets.
+  3. **For Simple Work**: Use `vibe-management` to create a single task directly.
+  4. **Task Discovery**: Use `list_projects` and `list_tasks` to find the active `project_id` and `task_id` when picking up existing work.
+
+### Phase B: Research & Architectural Design
+
+- **Objective**: Understand existing patterns and document new technical decisions.
+- **Research**: Use the `explore` subagent for deep codebase analysis (see [`cursor_agents.mdc`](.cursor/rules/cursor/cursor_agents.mdc)).
+- **Skill**: [`manage-adr`](.cursor/skills/manage-adr/SKILL.md)
+- **Workflow**:
+  1. If a change affects architecture, patterns, or introduces new dependencies, you **MUST** document it as an ADR.
+  2. Follow the "Creating a New ADR" flow in the skill instructions.
+  3. **MUST NOT** proceed with implementation until the decision is recorded in `docs/adr/`.
+  4. If an ADR is created, **MUST** update the task description with a link to the ADR.
+
+### Phase C: Implementation Loop
+
+- **Objective**: Deliver high-quality, tested code following established conventions.
+- **Skills**:
+  - [`vibe-execution`](.cursor/skills/vibe-execution/SKILL.md): For starting sessions and implementation workflow.
+  - [`vibe-management`](.cursor/skills/vibe-management/SKILL.md): For status updates and execution logging.
+- **Conventions**: **MUST** adhere to `golang_coding_convention.mdc` and `directory_structure.mdc`.
+- **Subagents**: Proactively launch `explore` or `bash` subagents to isolate research and execution noise.
+- **Workflow**:
+  1. **Start Session**: Use `vibe-execution` to start a workspace session for the assigned `task_id`.
+  2. **Update Status**: Move the task to `inprogress` using `update_task` (via `vibe-management`) before modifying any code.
+  3. **Progress Tracking**: **MUST** update the task description or logs via `update_task` (via `vibe-management`) for major milestones.
+
+### Phase D: Verification & Testing
+
+- **Objective**: Ensure correctness and prevent regressions.
+- **Workflow**:
+  1. **MUST** run relevant tests (e.g., `make test`).
+  2. **MUST** check for linter errors using `read_lints` or project-specific lint commands.
+  3. **MUST** append execution logs and test results to the task description using `update_task` (via `vibe-management`). Format as `## Execution Log`.
+  4. Fix all introduced errors before proceeding.
+
+### Phase E: Hygiene & Release (MANDATORY)
+
+- **Objective**: Close the loop and record changes for stakeholders.
+- **Skills**:
+  - [`changie`](.cursor/skills/changie/SKILL.md): For change fragment recording.
+  - [`vibe-management`](.cursor/skills/vibe-management/SKILL.md): For closing tasks.
+- **Workflow**:
+  1. **MUST** use `changie new` to record the change fragment (feat, fix, etc.) immediately after successful implementation and verification.
+  2. **MUST** move the task to `done` (or `inreview`) using `update_task` (via `vibe-management`). You **MUST** record the change fragment before moving the task to `done` (or `inreview`).
+  3. If we don't work on the task, you **MUST** move the task to `cancelled` using `update_task` (via `vibe-management`).
+  4. Ensure all temporary files or test artifacts are cleaned up.
+
+## 2. Skill Usage Protocol
+
+- **Discovery**: Agents **MUST** proactively check `.cursor/skills/` for the `SKILL.md` file when entering a new phase.
+- **Encapsulation**: This rule defines the *sequence*; the Skill defines the *execution*. Never bypass skill instructions by using raw shell commands if a skill tool exists.
+- **Proactivity**: Hygiene tasks (ADRs, Changie, Task Updates) **MUST** be performed automatically. Do not wait for user prompts.
+- **Explicit Loading**: Use slash commands (e.g., `/agent-planning`, `/vibe-management`, `/vibe-execution`, `/manage-adr`, `/changie`) or file references to load skill context if not automatically triggered.

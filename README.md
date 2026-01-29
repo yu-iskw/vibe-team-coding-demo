@@ -1,6 +1,6 @@
-# {PROJECT_NAME}
+# vibe-team-coding-demo
 
-{PROJECT_DESCRIPTION}
+A demo project for Vibe team coding capabilities
 
 ## Getting Started
 
@@ -55,4 +55,4 @@ pnpm format
 
 ## License
 
-{LICENSE}
+Apache-2.0
