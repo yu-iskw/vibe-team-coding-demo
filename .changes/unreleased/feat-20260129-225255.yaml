@@ -1,0 +1,3 @@
+kind: feat
+body: Setup Playwright at workspace root with basic smoke test for app loading
+time: 2026-01-29T22:52:55.671039+09:00

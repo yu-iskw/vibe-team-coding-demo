@@ -1,0 +1,3 @@
+kind: test
+body: Implement multi-actor collaborative scaffold E2E tests using separate browser contexts to simulate User A and User B interactions
+time: 2026-01-29T22:54:44.257676+09:00

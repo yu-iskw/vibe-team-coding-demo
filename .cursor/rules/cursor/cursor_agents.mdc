@@ -1,0 +1,91 @@
+---
+globs: .cursor/**/*
+alwaysApply: false
+---
+# Cursor Subagents
+
+Subagents are specialized AI assistants that the main agent can delegate tasks to. Each subagent operates in its own context window and returns its results to the parent.
+
+## Subagents vs. Skills
+
+| Feature | Subagents | Agent Skills |
+| --------- | ----------- | ------------ |
+| **Context** | Independent context window (fresh start) | Shared context with parent agent |
+| **Best For** | Long research, noisy logs, parallel work | Repeatable workflows, domain expertise |
+| **Isolation** | High (isolates intermediate noise) | Low (loads instructions into main context) |
+| **Trigger** | Automatic or custom file in `.cursor/agents/` | Automatic or `/` command via `SKILL.md` |
+
+## Multi-Agent Orchestration
+
+Orchestration over monoliths: Instead of one giant agent, break complex problems into specialized roles.
+
+### Roles
+
+1. **Primary Agent (Coordinator)**: Understands the high-level goal and delegates specific tasks.
+2. **Specialized Sub-Agents**: Experts in specific domains. They execute delegated tasks and return results.
+
+### Collaboration Syntax
+
+Use `@agent-name` in the subagent's instructions or the coordinator's prompt to define collaboration paths.
+
+### Hierarchical Pattern
+
+```mermaid
+graph TD
+    Coordinator[Primary Agent / Coordinator] --> SubAgent1[Specialized Agent A]
+    Coordinator --> SubAgent2[Specialized Agent B]
+    SubAgent1 --> SkillA[Domain Skill 1]
+    SubAgent2 --> SkillB[Domain Skill 2]
+```
+
+### Task Logging & Visualization
+
+Coordinators should be instructed to:
+
+- Comprehensively and precisely log task progression.
+- Generate **Mermaid diagrams** in a `task_logs.md` file to visualize the actual execution path taken.
+
+## Built-in Subagents
+
+Cursor uses specialized subagents automatically for context-heavy operations:
+
+- **Explore**: Specialized for searching and analyzing codebases using faster models.
+- **Bash**: Isolates verbose shell command output.
+- **Browser**: Handles noisy DOM snapshots and screenshots from web interaction.
+
+## Custom Subagents
+
+Create custom subagents to automate complex, multi-step processes or to perform work in parallel.
+
+### Definition
+
+Store custom subagents as `.md` files in:
+
+- `.cursor/agents/`: Project-level subagents
+- `~/.cursor/agents/`: User-level (global) subagents
+
+### Format
+
+```markdown
+---
+name: verifier
+description: Validates completed work, runs tests, and reports pass/fail status.
+---
+
+You are a Verification Subagent. Your task is to:
+1. Review the changes made by the parent agent.
+2. Run relevant test suites: `make test`.
+3. Check for linter errors: `golangci-lint run`.
+4. Provide a concise summary of what passed and what needs fixing.
+```
+
+### Standard Vibe Subagents
+
+- **`vibe-orchestrator`**: The coordinator. Owns high-level planning, ADRs, and board synchronization via `vibe-kanban-management`.
+- **`vibe-worker`**: The operator. Owns atomic task execution, implementation-level decisions, and real-time status/log updates via `vibe-kanban-management`.
+
+## Advanced Patterns
+
+- **Parallel Execution**: Launch multiple subagents simultaneously (e.g., one to write tests, one to refactor, one to update docs) to save time.
+- **Context Isolation**: Use subagents for tasks that generate a lot of "noise" (like reading large files or running verbose debuggers) to keep the main conversation focused.
+- **Stateful Resumption**: Subagents can be resumed if they fail or if more work is needed in that specific context.

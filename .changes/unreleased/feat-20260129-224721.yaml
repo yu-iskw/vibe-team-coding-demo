@@ -1,0 +1,3 @@
+kind: feat
+body: Add ADR documenting multi-layered testing stack (Vitest, Vue test-utils, Playwright, CRDT simulation)
+time: 2026-01-29T22:47:21.707624+09:00

@@ -1,0 +1,3 @@
+kind: docs
+body: Document decision to use Cursor Agent as primary executor for Vibe Worker in ADR 0006
+time: 2026-01-29T23:03:44.31802+09:00

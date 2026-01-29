@@ -1,0 +1,3 @@
+kind: fix
+body: Configure Trunk to allow ESLint 9 flat config access to local node_modules, resolving ERR_MODULE_NOT_FOUND errors in CI
+time: 2026-01-29T23:22:04.688637+09:00

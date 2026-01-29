@@ -12,14 +12,16 @@ However, if the task looks like a minor change that does not require a change fr
 ### Phase A: Discovery & Intake (MANDATORY)
 
 - **Objective**: Identify the target work, create a verifiable plan, and initialize the environment.
+- **Human-in-the-Loop GATE**: Major lifecycle transitions (Plan -> Sync -> Delegate) are **NOT automatic**. The orchestrator MUST halt and wait for explicit user activation commands at each boundary.
 - **Skills**:
-  - [`agent-planning`](.cursor/skills/agent-planning/SKILL.md): For complex requests, create a verified plan in `.cursor/plans/`.
-  - [`vibe-management`](.cursor/skills/vibe-management/SKILL.md): Sync verified plans to Vibe Kanban board.
+  - [`plan-tasks`](.cursor/skills/plan-tasks/SKILL.md): For complex requests, create a verified plan in `.cursor/plans/`.
+  - [`vibe-kanban-management`](.cursor/skills/vibe-kanban-management/SKILL.md): Sync verified plans to Vibe Kanban board.
 - **Workflow**:
-  1. **For Complex Work**: Use the tool-agnostic `agent-planning` skill to analyze the request, create a plan file, and get user verification.
-  2. **Sync to Board**: Use the **Plan Synchronization** feature in [`vibe-management`](.cursor/skills/vibe-management/SKILL.md) to bridge the verified roadmap into a hierarchical set of Vibe Kanban tickets.
-  3. **For Simple Work**: Use `vibe-management` to create a single task directly.
-  4. **Task Discovery**: Use `list_projects` and `list_tasks` to find the active `project_id` and `task_id` when picking up existing work.
+  1. **For Complex Work**: Use the tool-agnostic `plan-tasks` skill to analyze the request, create a plan file, and get user verification.
+  2. **Wait for Approval**: Stop and wait for the user to explicitly approve the plan and provide the command to synchronize.
+  3. **Sync to Board**: Once triggered (e.g., "Sync to board"), use the **Plan Synchronization** feature in [`vibe-kanban-management`](.cursor/skills/vibe-kanban-management/SKILL.md) to bridge the verified roadmap into a hierarchical set of Vibe Kanban tickets.
+  4. **For Simple Work**: Use `vibe-kanban-management` to create a single task directly.
+  5. **Task Discovery**: Use `list_projects` and `list_tasks` to find the active `project_id` and `task_id` when picking up existing work.
 
 ### Phase B: Research & Architectural Design
 
@@ -35,15 +37,16 @@ However, if the task looks like a minor change that does not require a change fr
 ### Phase C: Implementation Loop
 
 - **Objective**: Deliver high-quality, tested code following established conventions.
+- **Delegation GATE**: For orchestrators, delegation to workers is a **user-driven step**. The orchestrator must wait for the user to say "Delegate" or "Start" before launching worker subagents using the `Task` tool.
 - **Skills**:
-  - [`vibe-execution`](.cursor/skills/vibe-execution/SKILL.md): For starting sessions and implementation workflow.
-  - [`vibe-management`](.cursor/skills/vibe-management/SKILL.md): For status updates and execution logging.
+  - [`vibe-kanban-task-execution`](.cursor/skills/vibe-kanban-task-execution/SKILL.md): For starting sessions and implementation workflow.
+  - [`vibe-kanban-management`](.cursor/skills/vibe-kanban-management/SKILL.md): For status updates and execution logging.
 - **Conventions**: **MUST** adhere to `golang_coding_convention.mdc` and `directory_structure.mdc`.
 - **Subagents**: Proactively launch `explore` or `bash` subagents to isolate research and execution noise.
 - **Workflow**:
-  1. **Start Session**: Use `vibe-execution` to start a workspace session for the assigned `task_id`.
-  2. **Update Status**: Move the task to `inprogress` using `update_task` (via `vibe-management`) before modifying any code.
-  3. **Progress Tracking**: **MUST** update the task description or logs via `update_task` (via `vibe-management`) for major milestones.
+  1. **Start Session**: Use `vibe-kanban-task-execution` to start a workspace session for the assigned `task_id`.
+  2. **Update Status**: Move the task to `inprogress` using `update_task` (via `vibe-kanban-management`) before modifying any code.
+  3. **Progress Tracking**: **MUST** update the task description or logs via `update_task` (via `vibe-kanban-management`) for major milestones.
 
 ### Phase D: Verification & Testing
 
@@ -51,19 +54,19 @@ However, if the task looks like a minor change that does not require a change fr
 - **Workflow**:
   1. **MUST** run relevant tests (e.g., `make test`).
   2. **MUST** check for linter errors using `read_lints` or project-specific lint commands.
-  3. **MUST** append execution logs and test results to the task description using `update_task` (via `vibe-management`). Format as `## Execution Log`.
+  3. **MUST** append execution logs and test results to the task description using `update_task` (via `vibe-kanban-management`). Format as `## Execution Log`.
   4. Fix all introduced errors before proceeding.
 
 ### Phase E: Hygiene & Release (MANDATORY)
 
 - **Objective**: Close the loop and record changes for stakeholders.
 - **Skills**:
-  - [`changie`](.cursor/skills/changie/SKILL.md): For change fragment recording.
-  - [`vibe-management`](.cursor/skills/vibe-management/SKILL.md): For closing tasks.
+  - [`manage-changelog`](.cursor/skills/manage-changelog/SKILL.md): For change fragment recording.
+  - [`vibe-kanban-management`](.cursor/skills/vibe-kanban-management/SKILL.md): For closing tasks.
 - **Workflow**:
   1. **MUST** use `changie new` to record the change fragment (feat, fix, etc.) immediately after successful implementation and verification.
-  2. **MUST** move the task to `done` (or `inreview`) using `update_task` (via `vibe-management`). You **MUST** record the change fragment before moving the task to `done` (or `inreview`).
-  3. If we don't work on the task, you **MUST** move the task to `cancelled` using `update_task` (via `vibe-management`).
+  2. **MUST** move the task to `done` (or `inreview`) using `update_task` (via `vibe-kanban-management`). You **MUST** record the change fragment before moving the task to `done` (or `inreview`).
+  3. If we don't work on the task, you **MUST** move the task to `cancelled` using `update_task` (via `vibe-kanban-management`).
   4. Ensure all temporary files or test artifacts are cleaned up.
 
 ## 2. Skill Usage Protocol
@@ -71,4 +74,4 @@ However, if the task looks like a minor change that does not require a change fr
 - **Discovery**: Agents **MUST** proactively check `.cursor/skills/` for the `SKILL.md` file when entering a new phase.
 - **Encapsulation**: This rule defines the *sequence*; the Skill defines the *execution*. Never bypass skill instructions by using raw shell commands if a skill tool exists.
 - **Proactivity**: Hygiene tasks (ADRs, Changie, Task Updates) **MUST** be performed automatically. Do not wait for user prompts.
-- **Explicit Loading**: Use slash commands (e.g., `/agent-planning`, `/vibe-management`, `/vibe-execution`, `/manage-adr`, `/changie`) or file references to load skill context if not automatically triggered.
+- **Explicit Loading**: Use slash commands (e.g., `/plan-tasks`, `/vibe-kanban-management`, `/vibe-kanban-task-execution`, `/manage-adr`, `/manage-changelog`) or file references to load skill context if not automatically triggered.

@@ -1,0 +1,65 @@
+---
+globs: .cursor/**/*
+alwaysApply: false
+---
+# Agent Skills Standards
+
+Agent Skills is an open standard for extending AI agents with specialized capabilities, domain knowledge, and repeatable workflows.
+
+## Directory Structure
+
+A skill is a directory containing a `SKILL.md` file and optional supporting directories.
+
+```text
+skill-name/
+├── SKILL.md         # Required: instructions + metadata
+├── scripts/         # Optional: executable code (Bash, Python, etc.)
+├── references/      # Optional: additional documentation (loaded on demand)
+└── assets/          # Optional: templates, schemas, static resources
+```
+
+### Standard Locations
+- `.cursor/skills/`: Project-level skills
+- `.claude/skills/`: Project-level (Claude compatibility)
+- `~/.cursor/skills/`: User-level (global)
+
+## SKILL.md Format
+
+The `SKILL.md` file must contain YAML frontmatter followed by Markdown content.
+
+```markdown
+---
+name: my-skill-name
+description: A clear description of what this skill does and when the agent should use it.
+---
+
+# Skill Title
+
+## When to Use
+- Use this skill when...
+- This skill is helpful for...
+
+## Instructions
+1. Step-by-step guidance for the agent.
+2. Reference scripts using relative paths: `scripts/my-script.sh`.
+```
+
+### Frontmatter Fields
+- `name`: Max 64 chars, lowercase alphanumeric and hyphens only. Must match directory name.
+- `description`: Max 1024 chars. Critical for the agent to identify when the skill is relevant.
+- `disable-model-invocation`: (Optional) Set to `true` to require explicit `/skill-name` trigger.
+
+## Orchestration-Friendly Skills
+
+When designing skills for a multi-agent environment (orchestration):
+
+- **Modularity**: Design skills to perform single, atomic actions that specialized agents can call.
+- **Structured Results**: Skills should return clear, structured output (e.g., JSON or well-formatted text) that can be easily parsed and compiled by a coordinator agent.
+- **Atomic Execution**: Avoid side effects that depend on state across multiple skill calls if possible.
+
+## Best Practices
+
+- **Progressive Disclosure**: Keep `SKILL.md` concise (< 500 lines). Move detailed reference material to the `references/` directory to save context tokens.
+- **Self-Contained Scripts**: Ensure scripts in `scripts/` handle their own dependencies or clearly document requirements.
+- **Context Isolation**: Use skills for single-purpose, repeatable tasks that don't require a separate context window (unlike subagents).
+- **Tool Usage**: Skills can guide the agent to use existing tools (Shell, Read, etc.) more effectively for specific domains.
