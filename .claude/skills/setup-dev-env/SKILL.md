@@ -16,6 +16,10 @@ This skill automates the process of setting up the development environment to en
   - [ ] Run `pnpm install`
 - [ ] **Step 3: Tooling Setup**
   - [ ] Run `trunk install` to fetch managed linters and formatters
+- [ ] **Step 4: Workflow Tooling**
+  - [ ] Check for `changie` (Changelog management)
+  - [ ] Check for `adr-tools` (ADR management)
+  - [ ] Verify `vibe-kanban` accessibility
 
 ## Detailed Instructions
 
@@ -52,10 +56,50 @@ Trunk manages linters and formatters hermetically. Run the following command to 
 trunk install
 ```
 
+### 4. Workflow Tooling
+
+This project relies on several tools for workflow management. If you use Homebrew, you can install the necessary binaries in one command:
+
+```bash
+brew install changie adr-tools
+```
+
+#### Changie
+
+`changie` is used for managing changelog fragments. Check if it's installed:
+
+```bash
+changie --version
+```
+
+If not using Homebrew, follow the [Changie installation guide](https://changie.dev/guide/installation/).
+
+#### ADR-Tools
+
+`adr-tools` is used for managing Architecture Decision Records. Check if it's installed:
+
+```bash
+adr help
+```
+
+If not using Homebrew, follow the [adr-tools installation guide](https://github.com/npryce/adr-tools).
+
+#### Vibe Kanban
+
+`vibe-kanban` is used for task tracking. You can launch the server process using the project script:
+
+```bash
+pnpm vibe-kanban:server
+```
+
+This will run `npx vibe-kanban start`.
+
 ## Success Criteria
 
 - All `pnpm` dependencies are installed successfully.
 - `trunk` is installed and all managed tools are initialized.
+- `changie` and `adr-tools` are available in the shell.
+- `vibe-kanban` server can be started.
 - The Node.js version matches the requirement in `.node-version`.
 
 ## Post-Setup Verification

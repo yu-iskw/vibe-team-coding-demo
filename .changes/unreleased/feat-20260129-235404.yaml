@@ -1,0 +1,3 @@
+kind: feat
+body: Add caching for Playwright browsers in E2E tests workflow to improve CI performance
+time: 2026-01-29T23:54:04.592666+09:00
