@@ -1,0 +1,3 @@
+kind: feat
+body: Update vibe-worker subagent to use CURSOR_AGENT for workspace sessions
+time: 2026-01-29T23:03:11.812127+09:00

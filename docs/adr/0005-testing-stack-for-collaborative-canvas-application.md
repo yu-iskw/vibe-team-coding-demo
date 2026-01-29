@@ -15,7 +15,7 @@ VibeCanvas is a collaborative spatial graph editor using CRDT-based state manage
 3. **Vue Component Behavior**: UI controls and state mutations work correctly
 4. **End-to-End Collaboration**: Real browser synchronization and multi-user interaction
 
-The tech stack specification ([docs/spec/tech_stack.md](docs/spec/tech_stack.md)) mandates Vitest, @vue/test-utils, Playwright, and y-protocols for testing. The system design ([docs/spec/system_design.md](docs/spec/system_design.md)) shows complex data flows between Yjs state and Konva rendering that must be verified.
+The tech stack specification ([docs/spec/tech_stack.md](../spec/tech_stack.md)) mandates Vitest, @vue/test-utils, Playwright, and y-protocols for testing. The system design ([docs/spec/system_design.md](../spec/system_design.md)) shows complex data flows between Yjs state and Konva rendering that must be verified.
 
 Current testing infrastructure is minimal: root Vitest config exists but frontend package lacks testing dependencies.
 
@@ -28,7 +28,7 @@ We will implement a multi-layered testing stack:
 - **E2E Layer**: Playwright for browser-based collaborative flow validation
 - **Integration**: Single Vitest runner at workspace root supporting both common and frontend packages
 
-Testing philosophy follows [.cursor/rules/unit-test-manners.mdc](.cursor/rules/unit-test-manners.mdc): pure functions, decoupled logic, no mocks for external I/O where possible.
+Testing philosophy follows [.cursor/rules/unit-test-manners.mdc](../../.cursor/rules/unit-test-manners.mdc): pure functions, decoupled logic, no mocks for external I/O where possible.
 
 ## Consequences
 

@@ -8,10 +8,10 @@ describe("CRDT Convergence", () => {
     const doc2 = new Y.Doc();
 
     // Create Y.Maps for nodes and edges on both docs
-    const nodes1 = doc1.getMap<Y.Map<any>>("nodes");
-    const edges1 = doc1.getMap<Y.Map<any>>("edges");
-    const nodes2 = doc2.getMap<Y.Map<any>>("nodes");
-    const edges2 = doc2.getMap<Y.Map<any>>("edges");
+    const nodes1 = doc1.getMap<Y.Map<unknown>>("nodes");
+    const edges1 = doc1.getMap<Y.Map<unknown>>("edges");
+    const nodes2 = doc2.getMap<Y.Map<unknown>>("nodes");
+    const edges2 = doc2.getMap<Y.Map<unknown>>("edges");
 
     // Apply changes to doc1
     const node1 = new Y.Map();
@@ -85,8 +85,8 @@ describe("CRDT Convergence", () => {
     const doc1 = new Y.Doc();
     const doc2 = new Y.Doc();
 
-    const nodes1 = doc1.getMap<Y.Map<any>>("nodes");
-    const nodes2 = doc2.getMap<Y.Map<any>>("nodes");
+    const nodes1 = doc1.getMap<Y.Map<unknown>>("nodes");
+    const nodes2 = doc2.getMap<Y.Map<unknown>>("nodes");
 
     // Initial sync - both docs start with empty state
     const initialUpdate1 = Y.encodeStateAsUpdate(doc1);
@@ -154,8 +154,8 @@ describe("CRDT Convergence", () => {
     const doc1 = new Y.Doc();
     const doc2 = new Y.Doc();
 
-    const nodes1 = doc1.getMap<Y.Map<any>>("nodes");
-    const nodes2 = doc2.getMap<Y.Map<any>>("nodes");
+    const nodes1 = doc1.getMap<Y.Map<unknown>>("nodes");
+    const nodes2 = doc2.getMap<Y.Map<unknown>>("nodes");
 
     // Round 1: Initial sync
     const update1 = Y.encodeStateAsUpdate(doc1);

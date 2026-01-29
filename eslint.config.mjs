@@ -1,25 +1,37 @@
-// ESLint 9 flat config with TypeScript support for trunk check.
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
+import pluginVue from "eslint-plugin-vue";
+import vueParser from "vue-eslint-parser";
 
-export default [
+export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  ...pluginVue.configs["flat/recommended"],
   {
     ignores: [
       "**/node_modules/**",
       "**/dist/**",
       "**/.trunk/**",
       "**/coverage/**",
+      "**/build/**",
     ],
   },
   {
-    files: ["**/*.js", "**/*.cjs", "**/*.mjs", "**/*.ts", "**/*.vue"],
+    files: ["**/*.ts", "**/*.vue"],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: [".vue"],
+        sourceType: "module",
+      },
+    },
+  },
+  {
+    files: ["**/*.js", "**/*.cjs", "**/*.mjs"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
-      globals: {},
     },
-    rules: {},
   },
-];
+);

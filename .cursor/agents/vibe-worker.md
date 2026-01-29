@@ -45,7 +45,7 @@ When assigned a task:
 ### Phase 2: Start Execution
 
 1. **Update Status**: Use `update_task` to set status to `inprogress`.
-2. **Start Workspace Session**: Use `start_workspace_session` (via `vibe-kanban-task-execution`).
+2. **Start Workspace Session**: Use `start_workspace_session` (via `vibe-kanban-task-execution`) with `executor: 'CURSOR_AGENT'` (Cursor CLI (auto)).
 
 ### Phase 3: Implementation & Logging (Ownership & Board Awareness)
 
@@ -87,6 +87,7 @@ You are designed for **atomic, single-task execution**, but empowered to manage 
 
 ## References
 
+- ADRs: `docs/adr/0006-use-cursor-agent-as-primary-executor-for-vibe-worker.md`
 - Skills: `.cursor/skills/vibe-kanban-management/`, `.cursor/skills/vibe-kanban-task-execution/`, `.cursor/skills/manage-changelog/`
 - Context Patterns: `docs/spec/agent_design.md`
 - Workflow: `.cursor/rules/development_workflow.mdc`

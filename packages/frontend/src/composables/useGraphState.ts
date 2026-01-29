@@ -5,8 +5,8 @@ import type { NodeData, EdgeData } from "../types";
 
 export function useGraphState() {
   const ydoc = new Y.Doc();
-  const yNodes = ydoc.getMap<Y.Map<any>>("nodes");
-  const yEdges = ydoc.getMap<Y.Map<any>>("edges");
+  const yNodes = ydoc.getMap<Y.Map<unknown>>("nodes");
+  const yEdges = ydoc.getMap<Y.Map<unknown>>("edges");
 
   const nodes = ref<Map<string, NodeData>>(new Map());
   const edges = ref<Map<string, EdgeData>>(new Map());
@@ -100,7 +100,7 @@ export function useGraphState() {
       ydoc,
     );
 
-    provider.on("status", (event: any) => {
+    provider.on("status", (event: { status: string }) => {
       console.log("Sync status:", event.status);
     });
 
