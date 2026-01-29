@@ -16,7 +16,8 @@
     "lint:security": "trunk check --all --scope security",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "vibe-kanban:server": "npx vibe-kanban"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
