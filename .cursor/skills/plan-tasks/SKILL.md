@@ -1,5 +1,5 @@
 ---
-name: agent-planning
+name: plan-tasks
 description: General-purpose planning skill to break down complex goals into atomic, verifiable units of work. Independent of specific tracking tools.
 ---
 
@@ -45,6 +45,11 @@ The plan **MUST** include:
 - **Development Philosophy**: High-level guiding principles for the implementation (e.g., Readability over Migration, No Lint Disables, Verifiable Changes).
 - **Summary**: High-level overview of what will be accomplished.
 - **Phases**: Group tasks into logical milestones (e.g., Discovery, Implementation, Verification).
+- **Mandatory Visualizations**: For complex plans, you MUST include Mermaid diagrams for:
+  - **System Architecture**: (e.g., `graph LR`) Component relationships.
+  - **Task Dependencies**: (e.g., `graph TD`) The critical path and parallel work.
+  - **Agent Orchestration**: (e.g., `sequenceDiagram`) How subagents collaborate.
+  - **Logic Sequence**: (e.g., `sequenceDiagram`) The step-by-step logic flow.
 - **Atomic Tasks**: Breakdown each phase into fine-grained, mutually exclusive tasks.
   - Each task should be independent where possible to enable parallel execution.
   - Tasks should have clear boundaries (no overlapping work).
@@ -87,12 +92,50 @@ The plan **MUST** include:
 
 [One paragraph describing the overall goal]
 
-## Dependency Graph
+## Visualizations
+
+### System Architecture
+
+```mermaid
+graph LR
+    User[User/Client] --> API[API Gateway/Service]
+    API --> DB[(Database)]
+    API --> Cache((Redis))
+```
+
+### Task Dependencies
 
 ```mermaid
 graph TD
-    Phase1[Phase 1] --> Phase2[Phase 2]
+    Phase1[Phase 1: Setup] --> Phase2[Phase 2: Implementation]
+    Phase1 --> Phase3[Phase 3: Verification]
     Task1[Task 1] --> Task2[Task 2]
+```
+
+### Agent Orchestration
+
+```mermaid
+sequenceDiagram
+    participant O as Orchestrator
+    participant W as Worker
+    participant E as Explore
+    O->>E: Research Codebase
+    E-->>O: Results
+    O->>W: Delegate Task #1
+    W-->>O: Task Complete
+```
+
+### Logic Sequence
+
+```mermaid
+sequenceDiagram
+    participant C as Component
+    participant S as Service
+    participant A as API
+    C->>S: triggerAction()
+    S->>A: fetchResource()
+    A-->>S: Response
+    S-->>C: Update State
 ```
 
 ## Phases

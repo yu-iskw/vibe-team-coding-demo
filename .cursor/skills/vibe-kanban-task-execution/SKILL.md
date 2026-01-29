@@ -1,5 +1,5 @@
 ---
-name: vibe-execution
+name: vibe-kanban-task-execution
 description: Execute a specific Vibe Kanban task. Handles session start, coding, testing, and completion for single-task focused work.
 ---
 
@@ -118,7 +118,7 @@ Before marking complete, ensure quality:
 
 Close the task loop:
 
-1. **Record Change**: Use the `changie` skill to record the change fragment (feat, fix, etc.).
+1. **Record Change**: Use the `manage-changelog` skill to record the change fragment (feat, fix, etc.).
 2. **Final Update**: Use `update_task` to:
    - Set status to `done` (or `inreview` if review is required).
    - Append final execution summary.
@@ -131,14 +131,14 @@ Close the task loop:
 This skill is designed for **atomic, single-task execution**. If a task reveals additional work:
 
 - **Small Additions**: Update the current task description to include the new scope.
-- **Large Additions**: Create a new task using `vibe-management` skill and link it in the current task description.
-- **Dependencies**: Document dependencies in task descriptions and coordinate with `vibe-management` skill.
+- **Large Additions**: Create a new task using `vibe-kanban-management` skill and link it in the current task description.
+- **Dependencies**: Document dependencies in task descriptions and coordinate with `vibe-kanban-management` skill.
 
 ## Workflow Integration
 
 This skill is part of the execution phase:
 
-1. **Input**: A `task_id` from the Vibe Kanban board (created by `vibe-management` skill).
+1. **Input**: A `task_id` from the Vibe Kanban board (created by `vibe-kanban-management` skill).
 2. **Process**: Execute the task following the workflow above.
 3. **Output**: Completed task with change fragment recorded.
 
@@ -159,7 +159,7 @@ This pattern ensures you understand the "why" (from parent context) and the "wha
 ## References
 
 - See [references/hierarchy.md](references/hierarchy.md) for an explanation of how Projects, Repos, and Tasks relate.
-- See `docs/agent-memory-patterns.md` for detailed context aggregation patterns.
+- See `docs/spec/agent_design.md` for detailed context aggregation patterns.
 - See [references/mcp-tools.md](references/mcp-tools.md) for complete MCP tool documentation.
 - See `.cursor/rules/development_workflow.mdc` for the full lifecycle policy.
 - See `.cursor/agents/vibe-worker.md` for subagent usage patterns.

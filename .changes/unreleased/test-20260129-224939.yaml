@@ -1,0 +1,3 @@
+kind: test
+body: Add CRDT convergence test scaffold for Yjs state synchronization
+time: 2026-01-29T22:49:39.864374+09:00

@@ -1,5 +1,5 @@
 ---
-name: vibe-management
+name: vibe-kanban-management
 description: Sync verified plans to Vibe Kanban, manage board state, and coordinate task assignment for parallel execution.
 ---
 
@@ -9,7 +9,7 @@ This skill bridges the gap between verified planning documents and the Vibe Kanb
 
 ## When to Use
 
-- After a plan has been verified by the user (from `agent-planning` skill).
+- After a plan has been verified by the user (from `plan-tasks` skill).
 - To convert a markdown plan file into Vibe Kanban tickets.
 - To manage task dependencies and assign work to specialized agents.
 - To groom the backlog, prioritize tasks, or check board status.
@@ -28,7 +28,7 @@ Before creating or managing tasks, identify the correct project and repository c
 
 Translate a verified markdown plan (`.cursor/plans/*.md`) into a hierarchical structure on the Vibe board. This pattern ensures distributed agent memory via context inheritance.
 
-1. **Locate Plan**: Identify the target plan file created by the `agent-planning` skill.
+1. **Locate Plan**: Identify the target plan file created by the `plan-tasks` skill.
 2. **Create Parent Task**: Use `create_task` for the high-level feature.
    - **Title**: Use the feature name (e.g., `Implement BigQuery Sink`).
    - **Description**: Follow the **Parent Task Template** in [`references/task-description-template.md`](references/task-description-template.md).
@@ -87,14 +87,16 @@ If a task or plan requires specific environment setup (e.g., custom dependencies
 
 This skill works in sequence with other skills:
 
-1. **Input**: Verified plan from `agent-planning` skill (`.cursor/plans/*.md`).
+1. **Input**: Verified plan from `plan-tasks` skill (`.cursor/plans/*.md`).
 2. **Output**: Populated Vibe Kanban board with tickets ready for execution.
-3. **Handoff**: Tasks are then picked up by `vibe-execution` skill for implementation.
+3. **Handoff**: Tasks are then picked up by `vibe-kanban-task-execution` skill for implementation.
 
 ## References
 
 - See [references/hierarchy.md](references/hierarchy.md) for an explanation of how Projects, Repos, and Tasks relate.
 - See [references/task-description-template.md](references/task-description-template.md) for standardized task description structure.
+- See [references/execution-log-visuals.md](references/execution-log-visuals.md) for task logging templates and Mermaid visuals.
+- See [references/delegation-guide.md](references/delegation-guide.md) for detailed task handoff and delegation mechanics.
 - See [references/context-inheritance.md](references/context-inheritance.md) for context inheritance patterns.
 - See [references/mcp-tools.md](references/mcp-tools.md) for complete MCP tool documentation.
 - See `.cursor/agents/vibe-orchestrator.md` for orchestration patterns.

@@ -164,4 +164,35 @@ Key Context Points:
 
 ## Examples
 
-See `.cursor/skills/vibe-management/references/context-inheritance.md` for detailed examples of effective context inheritance patterns.
+### 1. Rich Parent Task Context
+
+When creating parent tasks, focus on providing enough context for subagents to understand the architectural boundaries.
+
+```markdown
+## Context
+
+### Goals
+
+Enable end-to-end request tracing for debugging production issues.
+
+### Architectural Decisions
+
+- **OpenTelemetry**: Vendor-neutral, wide ecosystem support
+- **OTLP Protocol**: Standard protocol, not vendor-specific
+- **Sampling**: 10% in production (configurable)
+
+### Constraints
+
+- Must not impact latency (< 1ms overhead)
+- Must integrate with existing logging service
+- Must support gRPC and HTTP
+
+### Related Systems
+
+- **Logging Service**: Traces correlated with logs
+- **Monitoring Dashboard**: Traces visualized with metrics
+```
+
+### 2. Standard Subtask
+
+See `.cursor/skills/vibe-kanban-management/references/context-inheritance.md` for detailed examples of effective context inheritance patterns.

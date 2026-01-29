@@ -294,4 +294,4 @@ Key context points from parent:
 ## References
 
 - See [task-description-template.md](task-description-template.md) for template structures
-- See `docs/agent-memory-patterns.md` for agent reading patterns
+- See `docs/spec/agent_design.md` for agent reading patterns

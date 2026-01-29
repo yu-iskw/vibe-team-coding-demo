@@ -1,0 +1,92 @@
+---
+description: Mandatory visualization standards for Plan Mode. Enforces the use of Mermaid diagrams for system architecture, task dependencies, agent orchestration, and logic flow.
+alwaysApply: true
+---
+
+# Plan Mode Visualization Standards
+
+When in Plan Mode (Shift+Tab) or when creating/updating plans in `.cursor/plans/`, you MUST adhere to the following visualization standards.
+
+## Core Principle
+
+"A diagram is worth a thousand lines of text." Every complex plan MUST be visualized to ensure architectural clarity and operational traceability.
+
+## Mandatory Diagrams
+
+For any non-trivial plan, you MUST include the following Mermaid diagrams:
+
+### 1. System Architecture (`graph LR`)
+
+Visualize the relationship between components, services, databases, and external APIs.
+
+- **Purpose**: Understand the "Big Picture" and integration points.
+- **Example**:
+
+  ```mermaid
+  graph LR
+      Frontend --> Backend[API Service]
+      Backend --> DB[(PostgreSQL)]
+      Backend --> Cache((Redis))
+  ```
+
+### 2. Task Dependencies (`graph TD`)
+
+Visualize the critical path, sequential dependencies, and parallelization opportunities.
+
+- **Purpose**: Optimize execution and identify blockers.
+- **Example**:
+
+  ```mermaid
+  graph TD
+      Setup[Phase 1: Setup] --> Impl[Phase 2: Implementation]
+      Impl --> Parallel1[Subtask A]
+      Impl --> Parallel2[Subtask B]
+      Parallel1 --> Verify[Phase 3: Verification]
+      Parallel2 --> Verify
+  ```
+
+### 3. Agent Orchestration (`sequenceDiagram`)
+
+Visualize the handoffs and collaboration between specialized subagents (e.g., Orchestrator, Worker, Explore).
+
+- **Purpose**: Clarify delegation boundaries and communication flow.
+- **Example**:
+
+  ```mermaid
+  sequenceDiagram
+      participant O as Orchestrator
+      participant E as Explore
+      participant W as Worker
+      O->>E: Research existing patterns
+      E-->>O: Patterns found
+      O->>W: Delegate implementation
+      W-->>O: PR created
+  ```
+
+### 4. Logic Sequence (`sequenceDiagram`)
+
+Visualize the step-by-step logic flow for critical algorithms or user interactions.
+
+- **Purpose**: Validate implementation logic before coding.
+- **Example**:
+
+  ```mermaid
+  sequenceDiagram
+      User->>UI: Submit Form
+      UI->>Val: Validate Input
+      Val-->>UI: OK
+      UI->>Store: Dispatch Action
+  ```
+
+## Implementation Workflow
+
+1. **Trigger**: When a task is complex or architectural.
+2. **Skill**: Always use the `.cursor/skills/plan-tasks/SKILL.md` workflow.
+3. **Draft**: Create the plan file with placeholders for diagrams.
+4. **Visualize**: Fill in the Mermaid diagrams based on the solution exploration.
+5. **Verify**: Ensure Mermaid syntax is valid and correctly reflects the plan.
+
+## References
+
+- Planning Skill: [`.cursor/skills/plan-tasks/SKILL.md`](../skills/plan-tasks/SKILL.md)
+- Orchestration: [`.cursor/rules/cursor/cursor_agents.mdc`](cursor_agents.mdc)

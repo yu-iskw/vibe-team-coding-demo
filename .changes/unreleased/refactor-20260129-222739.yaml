@@ -1,0 +1,3 @@
+kind: refactor
+body: refactor manage-changelog skill structure to decouple descriptive content into references
+time: 2026-01-29T22:27:39.332582+09:00
