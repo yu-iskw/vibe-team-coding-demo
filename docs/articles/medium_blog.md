@@ -65,6 +65,7 @@ In our workflow, the Orchestrator must create a verified plan—often using spec
 One of the biggest bottlenecks in AI engineering is the "context window" and the reasoning limit of single models. When a task is too large, the AI's logic begins to fray. Our solution is **Granular Decomposition**.
 
 The Orchestrator's most critical job is to identify independent logic blocks and split a monolithic requirement into bite-sized sub-tasks. By doing this:
+
 - **Focused Reasoning**: Each sub-agent works on a specific, isolated problem, drastically reducing the chance of logic errors.
 - **Parallel Velocity**: Because tasks are independent, we can launch multiple `vibe-worker` agents simultaneously. A feature that would take 4 hours for a single agent is completed in 30 minutes by a swarm of eight.
 - **Scalability**: This "Divide and Conquer" strategy allows us to tackle complex systems that would be impossible for a single LLM to hold in memory.

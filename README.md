@@ -6,16 +6,27 @@ A demo project for Vibe team coding capabilities, demonstrating scalable AI engi
 
 ## Beyond the Prompt: Scaling AI Engineering
 
-This repository showcases a professional AI development workflow that moves beyond single-agent "cowboy coding." We implement an **AI Swarm**—a hierarchical multi-agent system governed by engineering hygiene and scalable project management.
+This repository showcases a professional AI development workflow that moves beyond single-agent "cowboy coding." We implement an **AI Swarm**—a hierarchical multi-agent system governed by professional engineering hygiene and scalable project management.
+
+### The Problem: The "Lone Wolf" Trap
+
+Traditional AI coding often relies on a single agent handling complex prompts. At scale, this leads to **Architectural Drift**, **Context Collapse**, and **Visibility Blackouts**.
+
+### The Solution: Multi-Agent Orchestration
+
+We solve this by dividing AI labor into two distinct roles:
+
+- **Strategic Orchestration**: The `vibe-orchestrator` manages high-level planning, research, and architectural decisions (**ADRs**).
+- **Tactical Execution**: Parallel `vibe-worker` agents handle implementation in isolated **Git Worktrees**, allowing for high-velocity, collision-free development.
 
 ### Key Concepts
 
-- **Strategic Orchestration**: The `vibe-orchestrator` manages high-level planning and architectural decisions (ADRs).
-- **Tactical Execution**: Parallel `vibe-worker` agents handle implementation in isolated **Git Worktrees**.
+- **Granular Decomposition**: Monolithic requirements are split into independent, trackable sub-tasks, reducing cognitive load and error rates.
+- **Parallel Execution**: Multiple agents work simultaneously on different parts of the codebase, dramatically accelerating delivery.
 - **Neuro-Sync Point**: The **Vibe Kanban Board** acts as the source of truth, synchronizing human intent with agent execution via the **MCP Server**.
-- **Engineering Hygiene**: Automated **ADRs** and **Changelogs** prevent technical debt and ensure long-term maintainability.
+- **Engineering Hygiene**: Automated **ADRs**, **Changelogs**, and **Git Worktrees** prevent technical debt and ensure long-term maintainability.
 
-Read the full story:
+Read the full technical breakdown:
 
 - [English Article: Beyond the Prompt](./docs/articles/medium_blog.md)
 - [Japanese Article: プロンプトの先へ](./docs/articles/medium_blog.ja.md)
