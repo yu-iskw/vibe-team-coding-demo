@@ -1,0 +1,3 @@
+kind: feat
+body: Migrate state layer from y-websocket to @hocuspocus/provider with awareness support
+time: 2026-01-30T00:35:24.736047+09:00

@@ -1,7 +1,18 @@
 import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
-import { ref, onMounted, onUnmounted } from "vue";
+import { HocuspocusProvider } from "@hocuspocus/provider";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import type { NodeData, EdgeData } from "../types";
+
+interface AwarenessState {
+  cursor?: { x: number; y: number };
+  selection?: string[];
+  user?: { name: string; color: string };
+}
+
+interface RemoteAwareness {
+  clientId: number;
+  state: AwarenessState;
+}
 
 export function useGraphState() {
   const ydoc = new Y.Doc();
@@ -10,6 +21,7 @@ export function useGraphState() {
 
   const nodes = ref<Map<string, NodeData>>(new Map());
   const edges = ref<Map<string, EdgeData>>(new Map());
+  const remoteAwareness = ref<Map<number, RemoteAwareness>>(new Map());
 
   // Update local ref when Yjs state changes
   const updateLocalState = () => {
@@ -28,6 +40,24 @@ export function useGraphState() {
 
   yNodes.observeDeep(updateLocalState);
   yEdges.observeDeep(updateLocalState);
+
+  /**
+   * Reactive index for fast edge lookup.
+   * Maps nodeId -> Array of edges connected to it.
+   */
+  const nodeToEdges = computed(() => {
+    const map = new Map<string, EdgeData[]>();
+    edges.value.forEach((edge) => {
+      // Add to source node
+      if (!map.has(edge.sourceId)) map.set(edge.sourceId, []);
+      map.get(edge.sourceId)!.push(edge);
+
+      // Add to target node
+      if (!map.has(edge.targetId)) map.set(edge.targetId, []);
+      map.get(edge.targetId)!.push(edge);
+    });
+    return map;
+  });
 
   const addNode = (node: NodeData) => {
     const yNode = new Y.Map();
@@ -89,19 +119,32 @@ export function useGraphState() {
     }
   };
 
-  let provider: WebsocketProvider | null = null;
+  let provider: HocuspocusProvider | null = null;
 
   onMounted(() => {
-    // Connect to a local websocket provider for development
-    // In a real app, this would be your Hocuspocus server
-    provider = new WebsocketProvider(
-      "ws://localhost:1234",
-      "vibe-canvas-room",
-      ydoc,
-    );
-
-    provider.on("status", (event: { status: string }) => {
-      console.log("Sync status:", event.status);
+    // Connect to Hocuspocus provider for synchronization
+    provider = new HocuspocusProvider({
+      url: import.meta.env.VITE_WS_URL || "ws://localhost:1234",
+      name: "vibe-canvas-room",
+      document: ydoc,
+      onStatus: ({ status }) => {
+        console.log("Sync status:", status);
+      },
+      onAwarenessUpdate: ({ states }) => {
+        // Update remote awareness state
+        const newAwareness = new Map<number, RemoteAwareness>();
+        (
+          states as unknown as Array<{ clientId: number } & AwarenessState>
+        ).forEach((state) => {
+          if (state && typeof state.clientId === "number") {
+            newAwareness.set(state.clientId, {
+              clientId: state.clientId,
+              state: state as AwarenessState,
+            });
+          }
+        });
+        remoteAwareness.value = newAwareness;
+      },
     });
 
     initializeIfEmpty();
@@ -110,17 +153,36 @@ export function useGraphState() {
 
   onUnmounted(() => {
     if (provider) {
-      provider.disconnect();
+      provider.destroy();
     }
     ydoc.destroy();
   });
 
+  // Helper function to update local awareness (cursor position, selection, etc.)
+  const updateAwareness = (updates: Partial<AwarenessState>) => {
+    if (!provider || !provider.awareness) return;
+
+    const currentAwareness = provider.awareness.getLocalState() || {};
+    provider.setAwarenessField(
+      "cursor",
+      updates.cursor ?? currentAwareness.cursor,
+    );
+    provider.setAwarenessField(
+      "selection",
+      updates.selection ?? currentAwareness.selection,
+    );
+    provider.setAwarenessField("user", updates.user ?? currentAwareness.user);
+  };
+
   return {
     nodes,
     edges,
+    remoteAwareness,
     addNode,
     updateNodePosition,
     deleteNode,
     addEdge,
+    updateAwareness,
+    nodeToEdges,
   };
 }

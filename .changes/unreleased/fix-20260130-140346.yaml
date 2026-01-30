@@ -1,0 +1,3 @@
+kind: fix
+body: Fix E2E test failure in collaboration.spec.ts by updating the expected canvas count to match the actual implementation (4 layers).
+time: 2026-01-30T14:03:46.506849+09:00

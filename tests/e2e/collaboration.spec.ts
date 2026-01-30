@@ -44,9 +44,9 @@ test.describe("Collaborative Canvas Editing", () => {
       const canvasElementsA = pageA.locator(".canvas-container canvas");
       const canvasElementsB = pageB.locator(".canvas-container canvas");
 
-      // Should have at least one canvas element
-      await expect(canvasElementsA).toHaveCount(1);
-      await expect(canvasElementsB).toHaveCount(1);
+      // Should have four canvas elements (EdgeLayer, NodeLayer, SelectionLayer, AwarenessLayer)
+      await expect(canvasElementsA).toHaveCount(4);
+      await expect(canvasElementsB).toHaveCount(4);
 
       // User A clicks "Add Node" - this should work without errors
       await addNodeButtonA.click();

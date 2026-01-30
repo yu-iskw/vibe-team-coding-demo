@@ -7,6 +7,7 @@ export interface NodeData {
   height: number;
   content: string;
   color: string;
+  anchorPoints?: string[];
 }
 
 export interface EdgeData {
@@ -14,4 +15,6 @@ export interface EdgeData {
   sourceId: string;
   targetId: string;
   type: string;
+  sourceAnchor?: string;
+  targetAnchor?: string;
 }

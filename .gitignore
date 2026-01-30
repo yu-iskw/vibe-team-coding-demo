@@ -145,6 +145,7 @@ TODO.md
 
 # Cursor
 .cursor/plans/
+test-results/
 
 # Playwright
 .cache/ms-playwright/

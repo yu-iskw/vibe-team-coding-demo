@@ -1,0 +1,3 @@
+kind: fix
+body: Fix Docker builds by ensuring workspace dependencies are built before copying to runtime stage
+time: 2026-01-30T14:21:26.542173+09:00

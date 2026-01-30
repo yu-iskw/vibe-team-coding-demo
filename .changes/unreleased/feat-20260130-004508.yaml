@@ -1,0 +1,3 @@
+kind: feat
+body: Implement VibeCanvas system design scaffold with three-layer Konva rendering, Hocuspocus provider migration, and collaborative infrastructure
+time: 2026-01-30T00:45:08.061814+09:00

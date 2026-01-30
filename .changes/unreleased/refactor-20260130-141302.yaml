@@ -1,0 +1,3 @@
+kind: refactor
+body: Extract pnpm-build from docker-build.yml to build.yml
+time: 2026-01-30T14:13:02.069608+09:00
