@@ -24,7 +24,7 @@ COPY . .
 ARG VITE_HOCUSPOCUS_URL=ws://localhost:1234
 ENV VITE_HOCUSPOCUS_URL=$VITE_HOCUSPOCUS_URL
 
-RUN pnpm --filter frontend build
+RUN pnpm --filter frontend... build
 
 # Runtime stage: Serve static files with unprivileged Nginx
 FROM nginxinc/nginx-unprivileged:stable-alpine AS runtime

@@ -23,7 +23,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 COPY . .
 
 # Build the backend package and its workspace dependencies
-RUN pnpm --filter @vibe-team-coding-demo/backend build
+RUN pnpm --filter @vibe-team-coding-demo/backend... --filter @vibe-team-coding-demo/common build
 
 # Runtime stage
 FROM base AS runtime
