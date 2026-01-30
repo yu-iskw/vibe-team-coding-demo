@@ -1,6 +1,6 @@
 import * as Y from "yjs";
 import { HocuspocusProvider } from "@hocuspocus/provider";
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import type { NodeData, EdgeData } from "../types";
 
 interface AwarenessState {
@@ -40,6 +40,24 @@ export function useGraphState() {
 
   yNodes.observeDeep(updateLocalState);
   yEdges.observeDeep(updateLocalState);
+
+  /**
+   * Reactive index for fast edge lookup.
+   * Maps nodeId -> Array of edges connected to it.
+   */
+  const nodeToEdges = computed(() => {
+    const map = new Map<string, EdgeData[]>();
+    edges.value.forEach((edge) => {
+      // Add to source node
+      if (!map.has(edge.sourceId)) map.set(edge.sourceId, []);
+      map.get(edge.sourceId)!.push(edge);
+
+      // Add to target node
+      if (!map.has(edge.targetId)) map.set(edge.targetId, []);
+      map.get(edge.targetId)!.push(edge);
+    });
+    return map;
+  });
 
   const addNode = (node: NodeData) => {
     const yNode = new Y.Map();
@@ -106,7 +124,7 @@ export function useGraphState() {
   onMounted(() => {
     // Connect to Hocuspocus provider for synchronization
     provider = new HocuspocusProvider({
-      url: "ws://localhost:1234",
+      url: import.meta.env.VITE_WS_URL || "ws://localhost:1234",
       name: "vibe-canvas-room",
       document: ydoc,
       onStatus: ({ status }) => {
@@ -115,10 +133,12 @@ export function useGraphState() {
       onAwarenessUpdate: ({ states }) => {
         // Update remote awareness state
         const newAwareness = new Map<number, RemoteAwareness>();
-        states.forEach((state, clientId) => {
-          if (state) {
-            newAwareness.set(clientId, {
-              clientId,
+        (
+          states as unknown as Array<{ clientId: number } & AwarenessState>
+        ).forEach((state) => {
+          if (state && typeof state.clientId === "number") {
+            newAwareness.set(state.clientId, {
+              clientId: state.clientId,
               state: state as AwarenessState,
             });
           }
@@ -163,5 +183,6 @@ export function useGraphState() {
     deleteNode,
     addEdge,
     updateAwareness,
+    nodeToEdges,
   };
 }

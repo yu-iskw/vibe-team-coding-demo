@@ -10,7 +10,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@hocuspocus/provider": "^3.4.4",
+    "@hocuspocus/provider": "^3.4.3",
     "@vibe-team-coding-demo/common": "workspace:*",
     "@vueuse/core": "^14.1.0",
     "konva": "^10.2.0",

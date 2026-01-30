@@ -1,0 +1,3 @@
+kind: feat
+body: Implement reactive smart connector logic with boundary-aware anchor calculation for rectangles and circles.
+time: 2026-01-30T07:49:06.809028+09:00

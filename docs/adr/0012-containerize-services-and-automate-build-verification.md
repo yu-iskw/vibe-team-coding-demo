@@ -34,7 +34,7 @@ We decided to:
 ```mermaid
 graph LR
     User[User Browser] --> Frontend[Frontend (Nginx)]
-    Frontend -->|ws://| Backend[Backend (Hocuspocus)]
+    Frontend -->|wss://| Backend[Backend (Hocuspocus)]
     Frontend -.->|env: VITE_HOCUSPOCUS_URL| Backend
     subgraph Docker Infrastructure
         Frontend

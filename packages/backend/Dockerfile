@@ -46,7 +46,7 @@ USER node
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD node -e 'require("http").get("http://localhost:1234", (res) => process.exit(res.statusCode === 200 ? 0 : 1))' || exit 0
+  CMD node -e 'const req = require("http").get("http://localhost:1234", (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on("error", () => process.exit(1));'
 
 # Start the server
 CMD ["node", "dist/index.js"]

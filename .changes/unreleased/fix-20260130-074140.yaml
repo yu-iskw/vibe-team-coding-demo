@@ -1,0 +1,3 @@
+kind: fix
+body: update backend healthcheck in docker-compose.yml to correctly report failure on connection errors or non-200 responses
+time: 2026-01-30T07:41:40.33641+09:00
