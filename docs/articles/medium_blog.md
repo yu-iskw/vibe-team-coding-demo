@@ -70,6 +70,16 @@ The Orchestrator's most critical job is to identify independent logic blocks and
 - **Parallel Velocity**: Because tasks are independent, we can launch multiple `vibe-worker` agents simultaneously. A feature that would take 4 hours for a single agent is completed in 30 minutes by a swarm of eight.
 - **Scalability**: This "Divide and Conquer" strategy allows us to tackle complex systems that would be impossible for a single LLM to hold in memory.
 
+### A Pluggable Agent Ecosystem: Choice Without Compromise
+
+One of the most powerful features of Vibe Kanban is its **agent-agnostic nature**. While we use `vibe-worker` for its deep integration, the system is designed as a pluggable ecosystem.
+
+Through **Agent Profiles**, developers can swap the underlying "brain" of their workers. Whether you prefer the raw reasoning of **Claude Code**, the speed of **Gemini**, the familiarity of **Cursor**, or the versatility of **OpenAI Codex**, Vibe Kanban orchestrates them all through the same unified board.
+
+This means your workflow is future-proof. As new, more capable models and coding agents emerge, you can simply plug them into your existing Kanban-driven orchestration without changing your engineering processes.
+
+For more details on supported agents and how to configure them, check out the [Vibe Kanban Documentation](https://www.vibekanban.com/docs/supported-coding-agents).
+
 ### Interactive Feedback & Preview
 
 We've eliminated the "can you try this?" guesswork with the **Embedded Preview Browser**.

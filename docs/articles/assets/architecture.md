@@ -14,9 +14,15 @@ graph TB
         Board[("Vibe Kanban Board")]
     end
 
-    subgraph executionLayer ["Execution Layer"]
-        Worker1["vibe-worker (A)"]
-        Worker2["vibe-worker (B)"]
+    subgraph executionLayer ["Scalable Execution Layer"]
+        subgraph agentProfiles ["Agent Profiles (Pluggable)"]
+            Claude["Claude Code"]
+            Gemini["Gemini"]
+            Cursor["Cursor / vibe-worker"]
+            Codex["OpenAI Codex"]
+        end
+        Worker1["Agent Instance (A)"]
+        Worker2["Agent Instance (B)"]
         LogSkill["manage-changelog Skill"]
     end
 
@@ -24,8 +30,9 @@ graph TB
     Orchestrator --> PlanSkill
     Orchestrator --> ADRSkill
     PlanSkill --> Board
-    Board --> Worker1
-    Board --> Worker2
+    Board --> agentProfiles
+    agentProfiles --> Worker1
+    agentProfiles --> Worker2
     Worker1 --> Code["Codebase"]
     Worker2 --> Code
     Worker1 --> LogSkill
