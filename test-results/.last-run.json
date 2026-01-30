@@ -1,4 +1,4 @@
-In @test-results/.last-run.json around lines 1 - 4, The test-results/.last-run.json file is still tracked by Git despite adding test-results/ to .gitignore; untrack the file by removing it from the index (use git rm --cached on test-results/.last-run.json), commit the removal so the file is no longer tracked, and push the commit; confirm that test-results/ is present in .gitignore so future runs won’t re-add artifacts.{
+{
   "status": "passed",
   "failedTests": []
 }
