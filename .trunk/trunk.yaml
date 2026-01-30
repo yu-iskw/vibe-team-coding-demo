@@ -21,6 +21,7 @@ lint:
     - linters: [ALL]
       paths:
         - packages/backend/src/generated/**/*
+        - docs/articles/**/*
   disabled:
     - checkov
     - trufflehog
