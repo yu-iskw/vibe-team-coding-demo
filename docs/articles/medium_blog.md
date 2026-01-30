@@ -30,7 +30,7 @@ The Orchestrator is the "brain" and the guardian of the project's soul. It doesn
 
 - **Researches existing patterns** using specialized `explore` tools to ensure every new feature feels like it belongs.
 - **Drafts Architectural Decision Records (ADRs)** to document the rationale for technical choices.
-- **Populates the Board via MCP**: Using the **Vibe Kanban MCP Server**, the Orchestrator programmatically creates a hierarchy of tasks and subtasks on the board, transforming a raw plan into trackable units of work.
+- **Populates the Board via MCP**: Using the **Vibe Kanban MCP Server**, the Orchestrator programmatically creates a hierarchy of tasks and subtasks on the board. It practices **Granular Decomposition**, splitting monolithic requirements into independent, trackable units of work that can be addressed by separate agents.
 
 ### The vibe-worker (Tactical)
 
@@ -40,9 +40,17 @@ The Worker is the "hands." It picks up atomic tickets from the Kanban board.
 - **Automated Hygiene (Setup/Cleanup)**: Before a worker starts, **Setup Scripts** (e.g., `npm install`) prepare the environment. When it finishes, **Cleanup Scripts** (e.g., `npm run lint`) ensure the workspace is pristine.
 - **Real-time Feedback**: It reports progress back to the Kanban board, making its work observable line-by-line.
 
+![Cursor Agent Orchestration in Action](./assets/cursor_screenshot.png)
+
+As seen in the screenshot above, the planning phase is orchestrated directly within Cursor. The `vibe-orchestrator` analyzes the requirements, explores the codebase, and proposes a comprehensive execution plan. This strategic alignment ensures that the "What" and "Why" are verified by the human developer before any implementation begins.
+
 ---
 
 ## 2. The Neural Link: Vibe Kanban & Interactive Verification
+
+![Vibe Kanban Board Overview](./assets/vibe_kanban_screenshot.png)
+
+Once the plan is verified and synced via the MCP Server, it populates the Vibe Kanban board with atomic, parallelizable tasks. The screenshot illustrates this transition from high-level intent to a swarm of active implementations. Multiple `vibe-worker` agents then pick up these tickets in parallel, significantly accelerating the development cycle while maintaining strict architectural boundaries.
 
 The secret to scaling isn't just better prompts; it's **Task Management** and **Precise Feedback**. By using a Vibe Kanban board as the "Source of Truth," we achieve 100% observability.
 
@@ -51,6 +59,15 @@ The secret to scaling isn't just better prompts; it's **Task Management** and **
 ### Plan-First, Code-Second
 
 In our workflow, the Orchestrator must create a verified plan—often using specialized **Plan Mode** variants—before a single ticket is moved to "In Progress." If an approach fails, the agent can **Re-plan**, providing a summarized fresh start with better context rather than patching a broken solution.
+
+### Granular Decomposition: Solving Big Problems via Small Swarms
+
+One of the biggest bottlenecks in AI engineering is the "context window" and the reasoning limit of single models. When a task is too large, the AI's logic begins to fray. Our solution is **Granular Decomposition**.
+
+The Orchestrator's most critical job is to identify independent logic blocks and split a monolithic requirement into bite-sized sub-tasks. By doing this:
+- **Focused Reasoning**: Each sub-agent works on a specific, isolated problem, drastically reducing the chance of logic errors.
+- **Parallel Velocity**: Because tasks are independent, we can launch multiple `vibe-worker` agents simultaneously. A feature that would take 4 hours for a single agent is completed in 30 minutes by a swarm of eight.
+- **Scalability**: This "Divide and Conquer" strategy allows us to tackle complex systems that would be impossible for a single LLM to hold in memory.
 
 ### Interactive Feedback & Preview
 
@@ -70,6 +87,10 @@ AI agents are only as good as the guardrails we give them. We use specialized Ag
 ### Capturing "Architectural Memory" with ADRs
 
 Every significant choice—like choosing a database or a state management pattern—is documented using the `manage-adr` skill. This prevents the "AI amnesia" where future agents (or humans) might accidentally reverse a critical decision.
+
+### Automated Stakeholder Communication (Changelogs)
+
+We don't rely on git history alone, which can be messy. The `manage-changelog` skill (powered by Changie) requires agents to record "change fragments" for every completed task. This turns technical "noise" into readable, stakeholder-ready release notes automatically. It bridges the gap between the technical "how" and the business "what."
 
 ### Standardized Execution with Task Tags
 
