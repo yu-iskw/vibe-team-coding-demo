@@ -40,8 +40,8 @@ importers:
         version: 13.6.29
     devDependencies:
       '@types/node':
-        specifier: ^24.10.1
-        version: 24.10.9
+        specifier: ^25.1.0
+        version: 25.1.0
       tsx:
         specifier: ^4.19.2
         version: 4.21.0
@@ -572,9 +572,6 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-
-  '@types/node@24.10.9':
-    resolution: {integrity: sha512-ne4A0IpG3+2ETuREInjPNhUGis1SFjv1d5asp8MzEAGtOZeTeHVDOYqOgqfhvseqg/iXty2hjBf1zAOb7RNiNw==}
 
   '@types/node@25.1.0':
     resolution: {integrity: sha512-t7frlewr6+cbx+9Ohpl0NOTKXZNV9xHRmNOvql47BFJKcEG1CxtxlPEEe+gR9uhVWM4DwhnvTF110mIL4yP9RA==}
@@ -1992,10 +1989,6 @@ snapshots:
   '@types/estree@1.0.8': {}
 
   '@types/json-schema@7.0.15': {}
-
-  '@types/node@24.10.9':
-    dependencies:
-      undici-types: 7.16.0
 
   '@types/node@25.1.0':
     dependencies:
