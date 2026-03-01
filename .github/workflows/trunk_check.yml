@@ -31,7 +31,7 @@ jobs:
           version: 10.28.1
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - uses: step-security/harden-runner@e3f713f2d8f53843e71c69a996d56f51aa9adfb9 # v2.10.3
+      - uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.10.3
         with:
           egress-policy: audit
       - name: Trunk Check
