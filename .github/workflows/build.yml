@@ -54,5 +54,4 @@ jobs:
         with:
           egress-policy: audit
       - name: Trunk Check
-        if: github.event_name != 'push'
         uses: trunk-io/trunk-action@v1
