@@ -1,36 +1,59 @@
-name: PNPM Build Check
+name: CI
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".claude/**"
+      - ".cursor/**"
+      - ".vscode/**"
   pull_request:
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".claude/**"
+      - ".cursor/**"
+      - ".vscode/**"
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
-permissions: read-all
+permissions:
+  contents: read
+  checks: write
 
 jobs:
-  pnpm-build:
-    name: PNPM Build Check
+  ci:
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-
+        with:
+          version: 10.28.1
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version-file: .node-version
           cache: pnpm
-
       - name: Install dependencies
-        run: pnpm install
-
+        run: pnpm install --frozen-lockfile
       - name: Build all packages
         run: pnpm build
+      - name: Run Unit Tests
+        run: pnpm run test:unit
+      - name: Run Integration Tests
+        run: pnpm run test:integration
+      - uses: step-security/harden-runner@e3f713f2d8f53843e71c69a996d56f51aa9adfb9 # v2.10.3
+        with:
+          egress-policy: audit
+      - name: Trunk Check
+        if: github.event_name != 'push'
+        uses: trunk-io/trunk-action@v1
